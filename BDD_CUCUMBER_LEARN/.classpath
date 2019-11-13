@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="features"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="E:/All Jar Files/WORKING JARS FOR CUCUMBER/cucumber-core-1.2.5.jar"/>
+	<classpathentry kind="lib" path="E:/All Jar Files/WORKING JARS FOR CUCUMBER/cucumber-java-1.2.5.jar"/>
+	<classpathentry kind="lib" path="E:/All Jar Files/WORKING JARS FOR CUCUMBER/cucumber-junit-1.2.5.jar"/>
+	<classpathentry kind="lib" path="E:/All Jar Files/WORKING JARS FOR CUCUMBER/cucumber-jvm-deps-1.0.6.jar"/>
+	<classpathentry kind="lib" path="E:/All Jar Files/WORKING JARS FOR CUCUMBER/gherkin-2.12.2.jar"/>
+	<classpathentry kind="lib" path="E:/All Jar Files/WORKING JARS FOR CUCUMBER/cucumber-reporting-3.3.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

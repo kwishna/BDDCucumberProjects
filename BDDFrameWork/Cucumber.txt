@@ -1,0 +1,1248 @@
+﻿What Is BDD :
+What Is Cucumber : 
+
+Other Tool Like Cucumber -> FIT, Fitnesse, JBehave, Concordion, Robot Framework and Twist.
+
+Create feature Files In Gherkin Language.
+Keywords Are :-
+
+Feature : A Kind Of Suite Name. It Has 3 Parts :
+	a) 'Feature Keyword' b) Name Of The Feature c) Option Description Of The Feature.
+Ex.		  Feature : Test Login Functionality
+		  Here, We Will Test Login Function.
+		  
+Scenario : A Kind Of Test Case Name. It Has 3 Parts :
+	a) 'Scenario Keyword' b) Name Of The Scenario c) Option Description Of The Scenario.
+
+Background : This Is Used When We Have Repetitive Task In Each Test Case Or Scenario. Like Go To Url And User Should Be On Home Page.
+
+A Background is run before each scenario, but after any Before hooks.
+In your feature file, put the Background before the first Scenario. You can only have one set of Background steps per feature.
+If you need different Background steps for different scenarios, you’ll need to split them into different feature files.
+
+Ex. 	Background : Given user enters the url
+					 When homepage opens
+					 
+Given : To Show The Base Condition
+When : Actual Test Activity
+And : Next Step/Extension Of The Activity
+Then : Expected Condition
+
+Scenario Outline: Used For Data Driven Approach.
+Ex. When I click on the "Add Project" button
+    And I fill in "Project Name" with "<project>"
+    And I fill in "Duration" with "<duration>"
+    And I fill in "Description" with "<description>"
+    
+    Examples:
+      | project    | duration   | description   |
+      | Z-Mob      | 3 months   | QA            |
+      | WJ5-Web UI | 1 month    | UI Testing    |
+      | Q-Med      | 5 months   | UI Testing    |
+ 
+The steps can use <> delimited parameters that reference headers inthe examples table.
+Cucumber will replace these parameters with values from the table before it tries to
+match the step against a step definition.
+ 
+ Examples : This Keyword Is Used As Data Providers. Pipes Are Used As Column Separator.
+ 
+ @Tags : Tags Can Be Used To Group The Test Cases.
+ @Smoke, @Regression, @All etc.
+ 
+ Then We Need To Create A Class. This Class Is Called Runner Class. 
+ 
+----------------------------------------------------------------------------------------
+OLD :-
+import cucumber.api.junit.Cucumber;
+import org.junit.runner.RunWith;
+@RunWith(Cucumber.class)
+@Cucumber.Options(
+		format={"SimpleHtmlReport:report/smokeTest.html"},
+		tags={"@smokeTest"}
+	)
+
+Public class JUnitRunner {
+
+}
+-----------------------------------------------------------------------------------------
+TESTNG Runner Class :-
+//Latest Version 4.2.3
+
+/*
+   public class RunnerClass1{
+  
+		private TestNGCucumberRunner testNGCucumberRunner;
+  
+		@BeforeClass(alwaysRun = true)
+		public void setUpClass() throws Exception {
+		
+				testNGCucumberRunner = new TestNGCucumberRunner(this.getClass());
+		}
+  
+		@Test(groups = "cucumber", description = "Runs Cucumber Feature", dataProvider = "features")
+		public void feature(PickleEventWrapper cucumberFeature, CucumberFeatureWrapper wrapper) throws Throwable {
+		
+			testNGCucumberRunner.runScenario(cucumberFeature.getPickleEvent());
+		}
+  
+		@DataProvider public Object[][] features() {
+		
+			return testNGCucumberRunner.provideScenarios();
+		}
+  
+		@AfterClass(alwaysRun = true)
+		public void tearDownClass() throws Exception {
+			
+			testNGCucumberRunner.finish();
+		}
+  }
+ 
+ Or, Simply
+ public class RunnerClass1 extends AbstractTestNGCucumberTests{
+	}
+
+-----------------------------------------------------------------------------------------------
+If There Are Multiple Feature Files : Then Execution Order Will Be :-
+Cucumber features/scenarios are run in Alphabetical order by feature file name.
+
+if you specifically specify features, they should be run in the order as declared.
+For example:
+@Cucumber.Options(features={"automatedTestingServices.feature", "smoketest.feature"})
+------------------------------------------------------------------------------------------------
+Maven Run Command Line / Goals  : mvn clean test -Dcucumber.options = "--tags @alpha, @beta" 
+------------------------------------------------------------------------------------------------
+Learn : Instead Of Writing Exact Line Of Gherkin TC Line. We Can Write
+Then As Regex.
+Ex.
+ Scenario: title title
+  Given context context
+  When event event
+  Then outcome outcome
+  And more of the same
+  
+ Scenario: title
+  Given context contextz
+  When event eventz
+  Then outcome outcomez
+  And more of the samez
+
+Below Code Will Run Both The Scenario :-
+Note : Braces Means Parameters. Even Though
+Gherkin Is Not Sending Any Parameter Using
+<> Angular Bracket Or "".
+
+	Given("context ([a-zA-Z]{1,})", (s) -> {
+		System.out.println("Context ----------------");
+	});
+
+	When("event ([a-zA-Z]{1,})", (s) -> {
+
+		System.out.println("Event ----------------");
+	});
+
+	Then("outcome ([a-zA-Z]{1,})", (s) -> {
+
+		System.out.println("Outcome ----------------");
+	});
+	
+	Then("more of the ([a-zA-Z]{1,})", (s) -> {
+
+		System.out.println("More Of The Same ----------------");
+	});
+-----------------------------------------------------------------------------------
+Parameter :
+To Define Any Word As Parameter In The Gherkin As Keyword. We Put It In "" Or <>.
+If We Don't Define Any Word As Parameter In Gherkin And Used Regex In Step
+Definition File Then It Is Also Fine.
+
+The Paramater Word Going To Be Accepted As Parameter Must Be Inside 
+braces In TC. Ex. (regex)
+Ex : Somthing Is [.*] happening. -> Here The Regex Is Not A Parameter
+	 Somthing Is ([.*]) happening. -> Here The Regex Is A Parameter
+	 
+Note : If We Are Using "" For Parameter. Then We Must Put "" With Escape
+Character In StepDef Also.
+Ex. Scenario: Title of your scenario
+    Given I wantz to write a "step" with precondition
+    When I "completez" action
+    Then I "validatez" the outcomes
+ 
+@Given("^I wantz to write a \"([^\"]*)\" with precondition$")
+public void i_wantz_to_write_a_with_precondition(String arg1) throws Throwable {
+    // Write code here that turns the phrase above into concrete actions
+    throw new PendingException();
+}
+
+@When("^I \"([^\"]*)\" action$")
+public void i_action(String arg1) throws Throwable {
+    // Write code here that turns the phrase above into concrete actions
+    throw new PendingException();
+}
+
+@Then("^I \"([^\"]*)\" the outcomes$")
+public void i_the_outcomes(String arg1) throws Throwable {
+    // Write code here that turns the phrase above into concrete actions
+    throw new PendingException();
+}
+------------------------------------------------------------------------
+In Multiple feature Files : Steps Shouldn't Be Duplicate. Else, Error.
+------------------------------------------------------------------------
+
+We Can Add A List Below Any Gherkin Line. Which Can Be Taken As List Parameter
+In StepDefs. Without Mentioning In Gherkin File That Which Word Is A Parameter.
+
+Scenario: Title of your scenario
+    Given I want to write a step with precondition
+    And yet another action
+    When I complete action
+    |age |
+    | 12 |
+    | 18 |
+    | 20 |
+    Then I validate the outcomes
+    And check more outcomes
+    
+			When("yet another action", (DataTable a) -> {
+			    System.out.println(a.asList()); // prints [age, 12, 18, 20]
+			    System.out.println(a.asLists()); // prints [[age], [12], [18], [20]]
+			});
+
+Scenario: Title of your scenario
+    Given I want to write a step with precondition
+    And yet another action
+    When I complete action
+    |age | name   |
+    | 12 | krishna|
+    | 18 | kumar  |
+    | 20 | singh  |
+    Then I validate the outcomes
+    And check more outcomes
+    
+    When("yet another action", (DataTable a) -> {
+			    System.out.println(a.asMaps(String.class, String.class)); // prints [{age=12, name=krishna}, {age=18, name=kumar}, {age=20, name=singh}]
+				System.out.println(a.asMap(String.class, String.class)); // prints {age=name, 12=krishna, 18=kumar, 20=singh}
+			});
+
+#If There Is Single Column With Single Row : asList() => [a, b] -- asLists()=>[[a],[b]] -- asMap() && asMaps=> Error : Require 2 Columns
+#If There Is 2 Columns 2 Rows : asList() => [a,b, c,d] -- asLists()=>[[a,b],[c,d]] -- asMap() => {a=b, c=d} && asMaps=> [{a=b}, {c=d}]
+#If There Is 3 Columns 2 Rows : asList() => [a,b,c, d,e,f] -- asLists()=>[[a,b,c],[d,e,f]] -- asMap() => Error && asMaps=> Error
+			
+2 Feature Files With All Data Same Will Be Considerd As Single.
+
+Multiple Line String Parameter.
+ Given then i should receive an email with the body off:
+    """
+    then i should receive an email with the body off
+    then i should receive an email with the body off.
+    """
+In your step definition, there’s no need to find this text and match it in your pattern.
+It will automatically be passed as the last argument in the step definition.
+
+
+
+----------------------------
+Let's write a simple data table and see how we might use it.
+
+| firstName   | lastName | birthDate  |
+| Annie M. G. | Schmidt  | 1911-03-20 |
+| Roald       | Dahl     | 1916-09-13 |
+| Astrid      | Lindgren | 1907-11-14 |
+As this is a table the natural representation would be a list of a list of strings.
+
+java type: List<List<String>>
+
+[ 
+  [ "firstName", "lastName", "birthDate" ],
+  [ "Annie M.G", "Schmidt", "1911-03-20" ], 
+  [ "Roald", "Dahl", "1916-09-13" ], 
+  [ "Astrid", "Lindgren", "1907-11-14" ] 
+]
+This representation is not very useful. The fields are no longer labeled and the first row has to be discarded. So instead we can convert this table into a list of maps.
+
+java type: List<Map<String, String>>
+
+[
+  { "firstName": "Annie M.G", "lastName": "Schmidt",  "birthDate": "1911-03-20" }, 
+  { "firstName": "Roald",     "lastName": "Dahl",     "birthDate": "1916-09-13" }, 
+  { "firstName": "Astrid",    "lastName": "Lindgren", "birthDate": "1907-11-14" } 
+]
+
+-----------------------------------------------------------------------
+Allure : https://stackoverflow.com/questions/52037053/cucumber-jvm-3-allure-2-test-report-with-maven
+
+<!-- https://mvnrepository.com/artifact/io.qameta.allure/allure-cucumber4-jvm -->
+<dependency>
+    <groupId>io.qameta.allure</groupId>
+    <artifactId>allure-cucumber4-jvm</artifactId>
+    <version>2.10.0</version>
+</dependency>
+
+<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.1</version>
+                <configuration>
+                     <argLine>
+                    -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/1.9.2/aspectjweaver-1.9.2.jar"
+                    -Dcucumber.options="--plugin io.qameta.allure.cucumber4jvm.AllureCucumber4Jvm"
+                </argLine>
+                </configuration>
+                <dependencies>
+                <dependency>
+                    <groupId>org.aspectj</groupId>
+                    <artifactId>aspectjweaver</artifactId>
+                    <version>1.9.2</version>
+                </dependency>
+            </dependencies>
+            </plugin>
+  cmd:\\ go to {project.directory} allure serve allure-results
+  
+	  <!-- https://mvnrepository.com/artifact/io.qameta.allure/allure-cucumber-jvm For ClassNotFound Exception -->
+	<dependency>
+		<groupId>io.qameta.allure</groupId>
+		<artifactId>allure-cucumber-jvm</artifactId>
+		<version>2.9.0</version>
+	</dependency>
+  
+  
+-----------------------------------------------------------------------------
+cucumber html report :-
+  	@AfterSuite
+	private void generateReportForJsonFiles() {
+		File reportOutputDirectory = new File("target/cucumber-reports");
+		List<String> jsonFiles = new ArrayList<String>();
+		jsonFiles.add("./target/cucumber-reports/cucumber.json");
+		String projectName = "Krishna Ji";
+		String buildNumber = "1";
+
+		Configuration configuration = new Configuration(reportOutputDirectory, projectName);
+
+		configuration.setRunWithJenkins(false);
+		configuration.setBuildNumber(buildNumber);
+
+		ReportBuilder reportBuilder = new ReportBuilder(jsonFiles, configuration);
+		reportBuilder.generateReports();
+
+		}
+	
+	<dependency>
+		<groupId>net.masterthought</groupId>
+		<artifactId>cucumber-reporting</artifactId>
+		<version>4.3.0</version>
+	</dependency>	
+-------------------------------------------------------------------------
+Extent Report :-
+@CucumberOptions(
+		features = "src/test/resources/features",
+		plugin = {
+        "pretty",
+        "usage:target/cucumber-reports/cucumber-usage.json",
+        "html:target/cucumber-reports/cucumber-pretty",
+        "json:target/cucumber-reports/cucumber.json",
+        "pretty:target/cucumber-reports/cucumber-pretty.txt",
+        "usage:target/cucumber-reports/cucumber-usage.json",
+        "rerun:target/cucumber-reports/rerun.txt",
+        "com.vimalselvam.cucumber.listener.ExtentCucumberFormatter:target/extent-report/report.html"},
+        glue="test"
+		monochrome=true
+	)
+
+public class Runner extends AbstractTestNGCucumberTests{
+
+	@AfterClass
+    public static void tearDown() {
+        Reporter.setSystemInfo("user name", System.getProperty("user.name"));
+        Reporter.setSystemInfo("java vm version", System.getProperty("java.vm.version"));
+        Reporter.setSystemInfo("user country format", System.getProperty("user.country.format"));
+        Reporter.setSystemInfo("user country", System.getProperty("user.country"));
+        Reporter.setSystemInfo("java runtime version", System.getProperty("java.runtime.version"));
+        Reporter.setSystemInfo("os arch", System.getProperty("os.arch"));
+        Reporter.setSystemInfo("os version", System.getProperty("os.version"));
+        Reporter.setSystemInfo("user home", System.getProperty("user.home"));
+        Reporter.setSystemInfo("user language", System.getProperty("user.language"));
+        Reporter.setSystemInfo("java specification vendor", System.getProperty("java.specification.vendor"));
+        Reporter.setTestRunnerOutput("Sample test runner output message");
+	}
+}
+
+	<dependency>
+		<groupId>com.vimalselvam</groupId>
+		<artifactId>cucumber-extentsreport</artifactId>
+		<version>3.1.1</version>
+	</dependency>
+
+	<dependency>
+		<groupId>com.aventstack</groupId>
+		<artifactId>extentreports</artifactId>
+		<version>4.0.9</version>
+	</dependency>
+----------------------------------------------------------------------------------------
+Adding Logger :- log4j2
+	<?xml version="1.0" encoding="UTF-8"?>
+	<Configuration status="ALL" monitorInterval="30">
+ 
+    <!-- Logging Properties -->
+    <Properties>
+        <Property name="LOG_PATTERN">%sn %d{yyyy/MM/dd HH:mm:ss,SSS} %r [%-6p] [%t] %c{3} %C{3}.%M(%F:%L) – %m%n</Property>
+        <Property name="APP_LOG_ROOT">.target/logs</Property>
+    </Properties>
+     
+    <Appenders>
+     
+        <!-- Console Appender -->
+        <Console name="Console" target="SYSTEM_OUT" follow="true" >
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+         
+        <!-- File Appenders on need basis -->
+        <RollingFile name="frameworkLog" fileName="${APP_LOG_ROOT}/app-framework.log"
+            filePattern="${APP_LOG_ROOT}/app-framework-%d{yyyy-MM-dd}-%i.log">
+            <LevelRangeFilter minLevel="ERROR" maxLevel="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+         
+        <RollingFile name="debugLog" fileName="${APP_LOG_ROOT}/app-debug.log"
+            filePattern="${APP_LOG_ROOT}/app-debug-%d{yyyy-MM-dd}-%i.log">
+            <LevelRangeFilter minLevel="DEBUG" maxLevel="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+         
+        <RollingFile name="infoLog" fileName="${APP_LOG_ROOT}/app-info.log"
+            filePattern="${APP_LOG_ROOT}/app-info-%d{yyyy-MM-dd}-%i.log" >
+            <LevelRangeFilter minLevel="INFO" maxLevel="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+         
+        <RollingFile name="errorLog" fileName="${APP_LOG_ROOT}/app-error.log"
+            filePattern="${APP_LOG_ROOT}/app-error-%d{yyyy-MM-dd}-%i.log" >
+            <LevelRangeFilter minLevel="ERROR" maxLevel="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+         
+        <RollingFile name="perfLog" fileName="${APP_LOG_ROOT}/app-perf.log"
+            filePattern="${APP_LOG_ROOT}/app-perf-%d{yyyy-MM-dd}-%i.log" >
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="1"/>
+        </RollingFile>
+         
+        <RollingFile name="traceLog" fileName="${APP_LOG_ROOT}/app-trace.log"
+            filePattern="${APP_LOG_ROOT}/app-trace-%d{yyyy-MM-dd}-%i.log" >
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="1"/>
+        </RollingFile>
+         
+    </Appenders>
+ 
+    <Loggers>
+     
+        <Logger name="com.krishna.app.package" additivity="false" level="trace">
+            <AppenderRef ref="traceLog" />
+            <AppenderRef ref="Console" />
+        </Logger>
+         
+        <Logger name="com.krishna.app" additivity="false" level="debug">
+            <AppenderRef ref="debugLog" />
+            <AppenderRef ref="infoLog"  />
+            <AppenderRef ref="errorLog" />
+            <AppenderRef ref="Console"  />
+        </Logger>
+         
+        <Logger name="org.krishna.package" additivity="false" level="info">
+            <AppenderRef ref="perfLog" />
+            <AppenderRef ref="Console"/>
+        </Logger>
+        
+        <Logger name="krishna" additivity="false" level="all">
+            <AppenderRef ref="debugLog" />
+            <AppenderRef ref="infoLog"  />
+            <AppenderRef ref="errorLog" />
+            <AppenderRef ref="Console"  />
+            <AppenderRef ref="frameworkLog"  />
+            <AppenderRef ref="traceLog"  />
+            <AppenderRef ref="perfLog"  />
+        </Logger>
+                 
+        <Root level="DEBUG">
+            <AppenderRef ref="Console"/>
+        </Root>
+ 
+    </Loggers>
+ 
+</Configuration>
+
+	Dependencies :-
+	<dependency>
+		<groupId>org.apache.logging.log4j</groupId>
+		<artifactId>log4j-api</artifactId>
+		<version>2.11.1</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.logging.log4j</groupId>
+		<artifactId>log4j-core</artifactId>
+		<version>2.11.1</version>
+	</dependency>
+
+
+	<dependency>
+		<groupId>com.fasterxml.jackson.core</groupId>
+		<artifactId>jackson-core</artifactId>
+		<version>2.9.8</version>
+	</dependency>
+	<dependency>
+		<groupId>com.fasterxml.jackson.core</groupId>
+		<artifactId>jackson-databind</artifactId>
+		<version>2.9.8</version>
+	</dependency>
+	<dependency>
+		<groupId>com.fasterxml.jackson.core</groupId>
+		<artifactId>jackson-annotations</artifactId>
+		<version>2.9.8</version>
+	</dependency>
+------------------------------------------------------------------------
+Database Testing :-
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import org.junit.Assert;
+
+public class DatabaseConnection extends DriverFactory {
+
+    ReadConfigFile config = new ReadConfigFile();
+
+    public static String dbUrl;                 
+    public static String username;  
+    public static String password;
+    public static String database_driver;
+    Connection con;
+    Statement stmt;
+    String query;
+    ResultSet rs;
+
+    public DatabaseConnection() {
+        super();
+    }
+
+    public DatabaseConnection createConnection() throws SQLException, ClassNotFoundException {
+        con = DriverManager.getConnection(config.getUrl(),config.getUsername(),config.getPassword());
+        Class.forName(config.getDatabaseDriver());  
+        return new DatabaseConnection();
+    }
+
+    public DatabaseConnection createQuery() throws SQLException {
+        query = "select * from test where no = 1;";
+        stmt = con.createStatement();   
+        return new DatabaseConnection();
+    }
+
+    public DatabaseConnection executeQuery() throws SQLException {
+        rs = stmt.executeQuery(query);
+        return new DatabaseConnection();
+    }
+
+    public DatabaseConnection assertRecords(String name) throws SQLException {
+        while (rs.next()){
+            String myName = rs.getString(2);                                                                                           
+            Assert.assertEquals(myName,name);
+        }
+        return new DatabaseConnection();
+    }
+
+    public DatabaseConnection closeConnection() throws SQLException {
+        con.close();
+        return new DatabaseConnection();
+    }
+}
+
+package stepDefinitions;
+
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import util.DatabaseConnection;
+
+public class TransactionGeneratorTest extends DatabaseConnection {
+
+    @Given("^I am connected with the database$")
+    public void i_am_connected_with_the_database() throws Throwable {
+        createConnection();
+    }
+
+    @When("^I run the select query$")
+    public void i_run_the_select_query() throws Throwable {
+        createQuery();
+        executeQuery();
+    }   
+
+    @Then("^I should see the result as \"([^\"]*)\"$")
+    public void i_should_see_the_result_as(String name) throws Throwable {
+        assertRecords(name);
+    }
+}
+---------------------------------------------------------------------------------
+Running Cucumber On CMD Command Line :-
+@JUnit
+java -cp <classpath> org.junit.runner.JUnitCore com.example.test.RunCukesTest
+
+@Cucumber
+java -cp <classpath> cucumber.api.cli.Main \
+   --glue com.example.test \
+   --plugin pretty path/to/features
+   
+ @TestNG
+ java -cp ".: C:\Program Files\jbdevstudio4\studio\plugins\*" org.testng.TestNG testng.xml
+   
+   Read More Below About Command Line:
+--------------------------------------------------------------------------------
+The regular expression I'm logged in matches I'm logged in and I'm logged in as an admin. To avoid ambiguous matches, use ^I'm logged in$.
+
+When you put part of a regular expression in parentheses, whatever it matches gets captured for use later. This is known as a “capture group.”
+[Given("^I'm logged in as an? (.*)$")]
+
+When("^(?:I'm logged|I log) in as an? (.*)$") : Logical OR
+----------------------------------------------------------------------
+tags = {"@smoke", "@add"}
+tags = "@smoke and @fast"
+tags = "not @smoke"
+
+@fast	Scenarios tagged with @fast
+@wip and not @slow	Scenarios tagged with @wip that aren’t also tagged with @slow
+@smoke and @fast	Scenarios tagged with both @smoke and @fast
+@gui or @database	Scenarios tagged with either @gui or @database
+
+
+@After("@browser and not @headless")
+public void doSomethingAfter(Scenario scenario){
+}
+
+Lambda style:-
+
+After("@browser and not @headless", (Scenario scenario) -> {
+
+if(scenario.isFailed()) {
+    		
+    		byte[] b = ((TakesScreenshot)SeleniumDriverManager.getDriver()).getScreenshotAs(OutputType.BYTES);
+    		scenario.embed(b, "image/png");
+    	}
+});
+---------------------------------------------------------------------
+Data Tables Handling With Custom Object :-
+
+public class TypeRegistryConfiguration implements TypeRegistryConfigurer {
+
+    @Override
+    public Locale locale() {
+        return ENGLISH;
+    }
+
+    @Override
+    public void configureTypeRegistry(TypeRegistry typeRegistry) {
+        typeRegistry.defineDataTableType(new DataTableType(
+            Grocery.class,
+            (Map<String, String> row) -> new Grocery(
+                row.get("name"),
+                Price.fromString(row.get("price"))
+            )
+        ));
+    }
+}
+This may look a bit tedious. But you can also use your favourite object mapper library instead.
+
+-----	-----	-----
+
+ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+
+typeRegistry.defineDataTableType(new DataTableType(
+    Grocery.class,
+    (Map<String, String> row) -> objectMapper.convertValue(row, Grocery.class))
+);
+-------------------------------------------------------------------------------------
+Using Transfomer :-
+
+public class GherkinDateConverter extends Transformer<Date> {
+ 
+    SimpleDateFormat monthDayYearDash = new SimpleDateFormat("MM-dd-yyyy");
+ 
+    @Override
+    public Date transform(String date) {
+        return monthDayYearDash.parse(date);
+    }
+}
+
+@Given("^the user birthdate is set as ([\\d\\/-]+)$")
+public void setDOB(@Transform(GherkinDateConverter.class) Date birthdate) {
+	
+	public class GherkinDateConverter extends Transformer<Date> {
+ 
+    		SimpleDateFormat yearMonthDayDash = new SimpleDateFormat("yyyy-MM-dd");
+    		SimpleDateFormat monthDayYearDash = new SimpleDateFormat("MM-dd-yyyy");
+    		SimpleDateFormat yearMonthDaySlash = new SimpleDateFormat("yyyy/MM/dd");
+    		SimpleDateFormat monthDayYearSlash = new SimpleDateFormat("MM/dd/yyyy");
+ 
+    @Override
+    public Date transform(String date) {
+        try {
+            if (date.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                return yearMonthDayDash.parse(date);
+            }
+            if (date.matches("\\d{2}-\\d{2}-\\d{4}")) {
+                return monthDayYearDash.parse(date);
+            }
+            if (date.matches("\\d{4}\\/\\d{2}\\/\\d{2}")) {
+                return yearMonthDaySlash.parse(date);
+            }
+            if (date.matches("\\d{2}\\/\\d{2}\\/\\d{4}")) {
+                return monthDayYearSlash.parse(date);
+            }
+            if (date.matches("\\d+")) {
+                return new Date(Long.valueOf(date));
+            }
+            Logger.getLogger(GherkinDateConverter.class).error("Date '" + date + "' is not a valid date format");
+        } catch (ParseException e) {
+            Logger.getLogger(GherkinDateConverter.class).error(e.getMessage());
+        }
+        return new Date();
+    }
+}
+----------------------------------------------------------------------------------------------------------------
+Extra Annotation Is Cucumber : https://www.waitingforcode.com/testing/advanced-tests-with-cucumber/read
+Running Parallel Scenario Using TestNG : https://github.com/cucumber/cucumber-jvm/tree/v4.0.0/testng
+Cucumber Parallel : https://github.com/temyers/cucumber-jvm-parallel-plugin
+----------------------------------------------------------------------------------------------------------------
+Cucumber Command Line :
+
+Find Options Using - java cucumber.api.cli.Main --help
+
+deprecated : java -ea -Xmx512m -Dfile.encoding=UTF-8 -classpath "..." cucumber.api.cli.Main featureTwo.feature
+New : java -ea -Xmx512m -Dfile.encoding=UTF-8 -classpath "..." io.cucumber.core.cli.Main featureTwo.feature
+Important - io.cucumber.core.cli.Main
+
+Parallel :-
+java -cp .;<path to cucumber jar folder>/* cucumber.api.cli.Main --threads 4 -g parallel parallel
+java -cp <classpath> cucumber.api.cli.Main -p timeline:<report folder> --threads <thread count> -g <steps package> <path to feature files>
+
+maven : without any special plugin (Not Tested)
+mvn clean install -DCucumberOptions="--glue package_name_of_step_definitions \
+									 --plugin pretty path\to\featurefiles \
+									 --threads 2 \
+									 src/test/java/Cucumber_v4_7_2/Features \
+									 --plugin json:report/cucumber.json \
+									 --tags @baba \
+									 --monochrome true"
+									 
+									 
+mvn clean install -DCucumberOptions="--glue Cucumber_v4_7_2.Implementation --plugin pretty src/test/java/Cucumber_v4_7_2/Features --tags @baba --monochrome true"
+
+
+Usage: java cucumber.api.cli.Main [options] [ [DIR|DIR URI] | [ [FILE|FILE URI][:LINE]* ] | @[FILE|FILE URI] ]+
+
+Options:
+
+      --threads COUNT                      Number of threads to run tests under. Defaults to 1.
+
+  -g, --glue PATH                          Package to load glue code (step definitions, hooks and plugins) from. E.g: com.example.app
+
+  -p, --[add-]plugin PLUGIN[:PATH_OR_URL]  Register a plugin. Built-in formatter PLUGIN types: junit, html, pretty, progress, json, usage, rerun,
+                                           testng. Built-in summary PLUGIN types: default_summary, null_summary, unused. PLUGIN
+                                           can also be a fully qualified class name, allowing registration of 3rd party plugins.
+                                           --add-plugin does not clobber plugins of that type defined from a different source.
+
+  -t, --tags TAG_EXPRESSION                Only run scenarios tagged with tags matching TAG_EXPRESSION.
+
+  -n, --name REGEXP                        Only run scenarios whose names match REGEXP.
+
+  -d, --[no-]dry-run                       Skip execution of glue code.
+
+  -m, --[no-]monochrome                    Don't colour terminal output.
+
+  -s, --[no-]strict                        Treat undefined and pending steps as errors.
+
+      --snippets [underscore|camelcase]    Naming convention for generated snippets. Defaults to underscore.
+
+  -v, --version                            Print version.
+
+  -h, --help                               You're looking at it.
+
+      --i18n LANG                          List keywords for in a particular language. Run with "--i18n help" to see all languages
+
+      --junit,OPTION[,OPTION]*             Pass the OPTION(s) to the JUnit module. Use --junit,-h or --junit,--help to print the
+                                           options of the JUnit module.
+
+  -w, --wip                                Fail if there are any passing scenarios. 
+    
+      --order                              Run the scenarios in a different order. The options are 'reverse' and 'random'. In
+                                           case of 'random' order an optional seed parameter can be added 'random:<seed>'.
+
+      --count                              Number of scenarios to be executed. If not specified all scenarios are run.
+
+Feature path examples:
+
+  <path>                                   Load the files with the extension ".feature" for the directory <path> and its sub directories.
+
+  <path>/<name>.feature                    Load the feature file <path>/<name>.feature from the file system.
+
+  classpath:<path>/<name>.feature          Load the feature file <path>/<name>.feature from the classpath.
+
+  <path>/<name>.feature:3:9                Load the scenarios on line 3 and line 9 in the file <path>/<name>.feature.
+
+  @<path>/<file>                           Load <path>/<file> from the file system and parse feature paths generated by the rerun
+                                           formatter.
+
+  @classpath:<path>/<file>                 Load <path>/<file> from the classpath and parse feature paths generated by the rerun
+                                           formatter.
+
+***** Important *****
+In Order To Run A Desired Suite We Can Put The Runner Files In A failsafe plugin configuration And
+run 'mvn verify' with required annotation only.
+Ex. mvn test -Dcucumber.options='--tags "@smoke and @fast"'								 
+----------------------------------------------------------------------------------------------------------------
+Cucumber 4.7.2 :- Found In CucumberOptions.java
+Some More Cucumber Options -
+	name (String[] {}) -> Runs scenario with matching string regular expression array.
+	dryRun (True/False) -> Skip execution of steps
+	strict (True/False) -> Treat undefined and pending steps as errors.
+	features (String[] {}) -> directory of features or path to a single feature. If no feature path is provided, Cucumber will use the package of the Runner class.
+	glue (String[] {}) -> Package to load glue code. When no glue is provided, Cucumber will use the package of the Runner class.
+	extraGlue (String[] {}) -> Additional for step-defination, hooks and plugins.
+	tags (String[] {}) -> Run scenarios tagged with tags matching.
+	plugin (String[] {}) -> plugins array.Ex. progress, summary, pretty, usage, html, json, pretty, usage, timeline, rerun, junit, testng.
+	monochrome (True/False) -> colour terminal output.
+	snippets (SnippetType.UNDERSCORE / SnippetType.CAMELCASE) -> Format of the generated snippets.
+	
+https://github.com/cucumber/cucumber-jvm/blob/v4.0.0/core/src/main/resources/cucumber/api/cli/USAGE.txt	
+-----------------------------------------------------------------------------------------------------------------
+Java8 Implementation :-
+In JDK 8 Implementation - We Create Implementation Class And Extend io.cucumber.java8.En Interface.
+Then We Create An No-args Constructor And We Write The Implementation Of Steps In It.
+
+When User Opens 'https://www.google.co.in'
+
+		When("User Opens '{}'", (String url) -> {			
+			System.out.println("------------- "+url);
+		});
+		
+		OR,
+		
+		When("User Opens ([^\"]*)", (String url) -> {			
+			System.out.println("------------- "+url);
+		});
+
+{int}, {string}, {float}
+
+\d+ for Numbers
+
+If The Feature File Step Has ' Or " Mentioned Then Implementation Step Also Must Have It Mentioned.
+So That Parameter Passes Into The Function Without ' Or ".	
+----------------------------------------------------------------------------------------------------------------
+BDD :-
+Behaviour-Driven Development (BDD) is a collaborative approach to software development that bridges the communication
+gap between business and IT. BDD helps teams communicate requirements with more precision, discover defects early
+and produce software that remains maintainable over time.
+
+It helps teams create business requirements that can be understood by the whole team. Specifying examples uncovers
+misunderstanding people might not even be aware of. Teams that practice BDD focus on preventing defects rather
+than finding them. This leads to less rework and quicker time to market.	
+-----------------------------------------------------------------------------------------------------------------
+Parallel :-
+TestNG -
+Cucumber can be executed in parallel using TestNG and Maven test execution plugins by setting the dataprovider parallel option to true.
+
+JUnit -
+<configuration>
+    <parallel>classesAndMethods</parallel>
+    <useUnlimitedThreads>true</useUnlimitedThreads>
+</configuration>
+------------------------------------------------------------------------------------------------------------------
+Arguments :-
+Given the following animals:
+  | cow   |
+  | horse |
+  | sheep |
+  
+@Given("the following animals:")
+public void the_following_animals(List<String> animals) {
+}
+
+In this case, the DataTable is automatically flattened to a List<String> by Cucumber (using DataTable.asList(String.class))
+before invoking the step definition.
+
+Parameter types 🔗︎
+Text between curly braces reference a parameter type. Cucumber comes with the following built-in parameter types:
+
+Parameter Type		Description
+{int}				Matches integers, for example 71 or -19.
+{float}				Matches floats, for example 3.6, .8 or -9.2.
+{word}				Matches words without whitespace, for example banana (but not banana split)
+{string}			Matches single-quoted or double-quoted strings, for example "banana split" or 'banana split' .
+					Only the text between the quotes will be extracted. The quotes themselves are discarded.
+{} anonymous		Matches anything (/.*/).
+
+On the JVM, there are additional parameter types for biginteger, bigdecimal, byte, short, long and double
+
+Optional text 🔗︎
+It's grammatically incorrect to say 1 cucumbers, so we should make the plural s optional.
+That can be done by surrounding the optional text with parenthesis:
+
+I have {int} cucumber(s) in my belly
+That expression would match this text:
+
+I have 1 cucumber in my belly
+It would also match this text:
+
+I have 42 cucumbers in my belly
+
+---
+Sometimes you want to relax your language, to make it flow better. For example:
+A / character - it will always be interpreted as alternative text.
+I have {int} cucumber(s) in my belly/stomach
+This would match either of those texts:
+
+I have 42 cucumbers in my belly
+I have 42 cucumbers in my stomach
+------------------------------------------------------------------------------------------
+Hooks :-
+Before 🔗︎
+Before hooks run before the first step of each scenario.
+
+@Before
+public void doSomethingBefore() {
+}
+
+Before(() -> {
+});
+
+You can specify an explicit order for hooks if you need to.
+
+@Before(order = 10)
+public void doSomething(){
+    // Do something before each scenario
+}
+
+Before(10, () -> {
+    // Do something before each scenario
+});
+
+After hooks run after the last step of each scenario, even when steps are failed, undefined, pending, or skipped.
+
+@After 🔗︎
+public void doSomethingAfter(Scenario scenario){
+    // Do something after after scenario
+}
+
+After((Scenario scenario) -> {
+
+	if (scenario.isFailed()) {
+		byte[] screenshot = webDriver.getScreenshotAs(OutputType.BYTES);
+		scenario.embed(screenshot, "image/png");
+	}
+});
+
+@BeforeStep 🔗︎
+public void doSomethingBeforeStep(Scenario scenario){
+
+}
+
+BeforeStep((Scenario scenario) -> {
+
+});
+
+AfterStep 🔗︎
+@AfterStep
+public void doSomethingAfterStep(Scenario scenario){
+}
+
+AfterStep((Scenario scenario) -> {
+});
+
+Tagged hooks 🔗︎
+Hooks can be conditionally selected for execution based on the tags of the scenario.
+To run a particular hook only for certain scenarios, you can associate a Before or After Hook with a tag expression.
+
+@After("@browser and not @headless")
+public void doSomethingAfter(Scenario scenario){
+}
+
+After("@browser and not @headless", (Scenario scenario) -> {
+});
+
+------------------------------------------------------------------------------------------------------------------
+Tags :-
+A feature or scenario or can have as many tags as you like. Just separate them with spaces:
+
+@billing @bicker @annoy
+Feature: Verify billing
+
+It is not possible to place tags above Background or steps (Given, When, Then, And and But).
+
+Running a subset of scenarios 🔗︎
+You can tell Cucumber to only run scenarios with a particular tag:
+
+Using a JVM system property:
+	mvn test -Dcucumber.options='--tags "@smoke and @fast"'
+	
+Or an environment variable:
+# Linux / OS X:
+CUCUMBER_OPTIONS='--tags "@smoke and @fast"' mvn test
+
+# Windows:
+set CUCUMBER_OPTIONS='--tags "@smoke and @fast"'
+mvn test
+
+Or changing your JUnit runner class:
+@CucumberOptions(tags = "@smoke and @fast")
+public class RunCucumberTest {}
+-----------------------------------------------
+
+Given the following animals:
+  | cow   |
+  | horse |
+  | sheep |
+Declare the argument as a List<String>, but don’t define any capture groups in the expression:
+
+@Given("the following animals:")
+public void the_following_animals(List<String> animals) {
+}
+In this case, the DataTable is automatically flattened to a List<String> by Cucumber
+(using DataTable.asList(String.class)) before invoking the step definition.
+---------------------------------------------------
+Hooks :-
+You can declare hooks in any class.
+
+Scenario hooks 🔗︎
+Scenario hooks run for every scenario.
+
+Before 🔗︎
+Before hooks run before the first step of each scenario.
+
+Annotated method style:
+
+@Before
+public void doSomethingBefore() {
+}
+
+Before(() -> {
+});
+
+You can specify an explicit order for hooks if you need to.
+
+@Before(order = 10)
+public void doSomething(){
+    // Do something before each scenario
+}
+
+Before(10, () -> {
+    // Do something before each scenario
+});
+
+After 🔗︎
+After hooks run after the last step of each scenario, even when steps are failed, undefined, pending, or skipped.
+
+@After
+public void doSomethingAfter(Scenario scenario){
+    // Do something after after scenario
+}
+
+After((Scenario scenario) -> {
+});
+The scenario parameter is optional. If you use it, you can inspect the status of the scenario.
+
+BeforeStep 🔗︎
+@BeforeStep
+public void doSomethingBeforeStep(Scenario scenario){
+}
+BeforeStep((Scenario scenario) -> {
+
+});
+
+AfterStep 🔗︎
+@AfterStep
+public void doSomethingAfterStep(Scenario scenario){
+}
+
+AfterStep((Scenario scenario) -> {
+});
+
+Tagged hooks 🔗︎
+Hooks can be conditionally selected for execution based on the tags of the scenario. To run a particular
+hook only for certain scenarios, you can associate a Before or After Hook with a tag expression.
+
+@After("@browser and not @headless")
+public void doSomethingAfter(Scenario scenario){
+}
+
+After("@browser and not @headless", (Scenario scenario) -> {
+});
+
+
+Tags 🔗︎
+Tags are a great way to organise your features and scenarios.
+
+They can be used for two purposes:
+
+Running a subset of scenarios Scoping hooks to a subset of scenarios
+
+@billing
+Feature: Verify billing
+
+  @important
+  Scenario: Missing product description
+    Given hello
+
+  Scenario: Several products
+    Given hello
+A feature or scenario or can have as many tags as you like. Just separate them with spaces:
+
+@billing @bicker @annoy
+Feature: Verify billing
+Tags can be placed above the following Gherkin elements:
+
+Running a subset of scenarios 🔗︎
+You can tell Cucumber to only run scenarios with a particular tag:
+
+Expression				Description
+@fast					Scenarios tagged with @fast
+@wip and not @slow		Scenarios tagged with @wip that aren’t also tagged with @slow
+@smoke and @fast		Scenarios tagged with both @smoke and @fast
+@gui or @database		Scenarios tagged with either @gui or @database
+
+For even more advanced tag expressions you can use parenthesis for clarity, or to change operator precedence:
+(@smoke or @ui) and (not @slow)
+-------------------------------------------------------------------------------------------------------------
+Type Registery :-
+Type Registry 🔗︎
+The type registry is used to configure parameter types and data table types. It can be configured by placing an implementation of cucumber.api.TypeRegistryConfigurer on the glue path.
+
+For instance, the following class registers a ParameterType of type Integer, and a DataTableType of type ItemQuantity:
+
+package com.example;
+
+import cucumber.api.TypeRegistry;
+import cucumber.api.TypeRegistryConfigurer;
+import io.cucumber.cucumberexpressions.ParameterType;
+import io.cucumber.datatable.DataTableType;
+
+import java.util.Locale;
+
+import static java.util.Locale.ENGLISH;
+
+public class TypeRegistryConfiguration implements TypeRegistryConfigurer {
+
+    @Override
+    public Locale locale() {
+        return ENGLISH;
+    }
+
+    @Override
+    public void configureTypeRegistry(TypeRegistry typeRegistry) {
+        typeRegistry.defineParameterType(new ParameterType<>(
+            "digit",
+            "[0-9]",
+            Integer.class,
+            (String s) -> Integer.parseInt(s))
+        );
+
+        typeRegistry.defineDataTableType(new DataTableType(
+            ItemQuantity.class,
+            (String s) -> new ItemQuantity(s))
+        );
+    }
+}
+---------------------------
+Using the TypeRegistryConfiguration it is also possible to plugin an ObjectMapper.
+The object mapper (Jackson in this example) will handle the conversion of anonymous parameter types and data table entries.
+
+package com.example;
+
+import cucumber.api.TypeRegistry;
+import cucumber.api.TypeRegistryConfigurer;
+import io.cucumber.cucumberexpressions.ParameterByTypeTransformer;
+import io.cucumber.datatable.TableCellByTypeTransformer;
+import io.cucumber.datatable.TableEntryByTypeTransformer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.lang.reflect.Type;
+import java.util.Locale;
+import java.util.Map;
+
+import static java.util.Locale.ENGLISH;
+
+public class TypeRegistryConfiguration implements TypeRegistryConfigurer {
+
+    @Override
+    public Locale locale() {
+        return ENGLISH;
+    }
+
+    @Override
+    public void configureTypeRegistry(TypeRegistry typeRegistry) {
+        Transformer transformer = new Transformer();
+        typeRegistry.setDefaultDataTableCellTransformer(transformer);
+        typeRegistry.setDefaultDataTableEntryTransformer(transformer);
+        typeRegistry.setDefaultParameterTransformer(transformer);
+    }
+
+    private class Transformer implements ParameterByTypeTransformer, TableEntryByTypeTransformer, TableCellByTypeTransformer {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        @Override
+        public Object transform(String s, Type type) {
+            return objectMapper.convertValue(s, objectMapper.constructType(type));
+        }
+
+        @Override
+        public <T> T transform(Map<String, String> map, Class<T> aClass, TableCellByTypeTransformer tableCellByTypeTransformer) {
+            return objectMapper.convertValue(map, aClass);
+        }
+
+        @Override
+        public <T> T transform(String s, Class<T> aClass) {
+            return objectMapper.convertValue(s, aClass);
+        }
+    }
+}
+----------------------------------------------------------------------------------------------------------------------------------
+
+Gherkin Keywords:-
+Keywords 🔗︎
+Each line that isn’t a blank line has to start with a Gherkin keyword, followed by any text you like.
+The only exceptions are the feature and scenario descriptions.
+
+The primary keywords are:
+
+Feature
+Rule (as of Gherkin 6)
+Example (or Scenario)
+Given, When, Then, And, But (steps)
+Background
+Scenario Outline (or Scenario Template)
+Examples
+There are a few secondary keywords as well:
+
+""" (Doc Strings)
+| (Data Tables)
+@ (Tags)
+# (Comments)

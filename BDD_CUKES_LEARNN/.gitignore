@@ -1,0 +1,7 @@
+/target/
+allure-results
+.idea
+test-output
+*.jar
+*.exe
+bin
